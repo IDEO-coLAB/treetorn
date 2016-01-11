@@ -6,25 +6,17 @@ import util from 'util';
 // FIXME: how do we distinguish between Objects as dictionaries and objects as leaf nodes, e.g. a leaf node that is a date object.
 
 /* 
-	Is this primarily for validating Javascript object data structures (vs stringified JSON?). This is important, because if JS, then it
-	may be perfectly valid to have an element in a data structure that is a Date or Moment object. If it's more for stringified JSON, then
-	we can't have a Date or Moment object, but instead need those objects to be serialized to JSON.
-	*/
-
-
-
-/* 
-	Compares test data structure to state.
+	Compares reference data structure to a live data structure, called the state.
  
-	Returns a Map with keys
-	passes: are test and state equivalent?
-	err: where do test and state differ?
+	Returns an object with keys:
+		passes: boolean, are test and state equivalent?
+		err: string, where do test and state differ?
   
 	The test is opinionated and expects state to comply with 
 	some guidelines:
-	* Each node in the data structure must be a Map, Array, or primitive (number, string)
-	* Objects in a list must be of the same type
-	* Data structure leaf nodes must be strings, numbers, booleans, or undefined
+	* Each node in the data structure must be a Dictionary (Map object or Object), Array, or primitive
+	* Objects in a list must recursively be of the same type
+	* Data structure leaf node primitives must be strings, numbers, booleans, or undefined
 */
 let compareState = function(test, state) {
 	if (isLeaf(test)) {
