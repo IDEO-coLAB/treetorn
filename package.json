@@ -1,0 +1,18 @@
+{
+  "name": "redact",
+  "version": "0.0.0",
+  "description": "A module that tests simple object data structures",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src -d lib"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.4.0",
+    "jasmine": "^2.4.1"
+  }
+}
