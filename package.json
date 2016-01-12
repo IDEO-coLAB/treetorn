@@ -4,7 +4,8 @@
   "description": "A module that tests simple object data structures",
   "main": "index.js",
   "scripts": {
-    "build": "babel src -d lib"
+    "build": "babel src -d lib",
+    "test": "jasmine"
   },
   "author": "",
   "license": "ISC",
