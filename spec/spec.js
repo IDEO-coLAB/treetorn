@@ -15,6 +15,14 @@ describe('comparing test and state', () => {
 		expect(compareState('string', new Array()).passes).toBe(false);
 	});
 
+	it('should return true when test is a number and state is a Date', () => {
+		expect(compareState(1, new Date()).passes).toBe(true);
+	});
+
+	it('should return true when test is a Date and state is a number', () => {
+		expect(compareState(new Date(), 1).passes).toBe(true);
+	});
+
 	it('should return true when test and state are arrays of numbers', () => {
 		var test = [1, 2, 3, 4];
 		var state = [5, 6, 7, 8, 9, 10];
@@ -30,7 +38,6 @@ describe('comparing test and state', () => {
 			{'bar': 1}
 		]
 		var r = compareState(test, state);
-		// console.log(r.err);
 		expect(r.passes).toBe(false);
 	});
 

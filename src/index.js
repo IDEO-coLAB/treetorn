@@ -2,33 +2,41 @@
 
 import _ from 'underscore';
 import util from 'util';
+import { isDictionary, isArray, containsKey, anyKey, get, copyWithoutKey } from './helpers';
 
 // FIXME: how do we distinguish between Objects as dictionaries and objects as leaf nodes, e.g. a leaf node that is a date object.
 
 /* 
-	Compares reference data structure to a live data structure, called the state.
+	Recursively compares a reference data structure to a given data structure (the state).
  
+	compareState is opinionated and expects test and state to be data structures that comply with 
+	some rules:
+	
+	* All pbjects in a list must be of the same type (i.e. compareState(a, b) must return true for all elements in the list)
+	* Maps and objects are treated as dictionaries. Two dictionaries are the same if they have exactly the same set of keys 
+		and for each key, the value at the key is the same for test and state.
+	* An object where object.constructor === Object is treated as a dictionary (e.g. let x = {foo:1} is treated as a Dictionary)
+	* An object where object.constructor === Map is treated as a dictionary
+	* All other objects are treated as a leaf node. compareState() of any two leaf nodes always returns true regardless of 
+		object type or primitive type 
+	* Doesn't currently support WeakMaps, Sets, WeakMaps
+
 	Returns an object with keys:
 		passes: boolean, are test and state equivalent?
 		err: string, where do test and state differ?
-  
-	The test is opinionated and expects state to comply with 
-	some guidelines:
-	* Each node in the data structure must be a Dictionary (Map object or Object), Array, or primitive
-	* Objects in a list must recursively be of the same type
-	* Data structure leaf node primitives must be strings, numbers, booleans, or undefined
 */
 let compareState = function(test, state) {
-	if (isLeaf(test)) {
-		return compareLeaf(test, state);
+	if (isDictionary(test) === true) {
+		return compareDictionary(test, state);
 	}
 
-	if (isArray(test)) {
+	if (isArray(test) === true) {
 		return compareArray(test, state);
 	}
 
-	// includes Map, or Object
-	return compareMap(test, state);
+	// test ie neither dictionary nor array so we'll assume it's a leaf
+	// need to test whether state is also a leaf
+	return compareLeaf(test, state);
 };
 
 function compareArray(test, state) {
@@ -84,8 +92,8 @@ function comparePrototypeArray(prototype, state) {
 }
 
 function compareLeaf(test, state) {
-	if (isLeaf(state)) {
-		// already tested that state is a leaf
+	// checked that test is neither dictionary nor array, now check state
+	if (isDictionary(state) === false && isArray(state) === false) {
 		return { passes: true, err: undefined };
 	} else {
 		return { 
@@ -97,7 +105,7 @@ function compareLeaf(test, state) {
 
 // make sure the two objects have the same keys and recursively call
 // compareState on values. Test and state can be objects or Map objects.
-function compareMap(test, state) {
+function compareDictionary(test, state) {
 	let testKey = anyKey(test);
 
 	// if test is empty, make sure state is also empty	
@@ -132,70 +140,7 @@ function compareMap(test, state) {
 	let trimmedTest = copyWithoutKey(testKey, test);
 	let trimmedState = copyWithoutKey(testKey, state);
 
-	return compareMap(trimmedTest, trimmedState);
-}
-
-function isMap(object) {
-	return object.constructor === Map;	
-}
-
-let isArray = function(object) {
-	return object.constructor === Array;
-}
-
-let isLeaf = function(object) {
-	let type = typeof object;
-	return (
-		type === 'number'  || 
-		type === 'string'  ||
-		type === 'boolean' ||
-		type === 'undefined'
-		);
-}
-
-let containsKey = function(key, object) {
-	if (object.constructor === Map) {
-		let keys = object.keys();
-		return keys.next().value;
-	} else {
-		return _.first(Object.keys(object));
-	}
-}
-
-// returns a 'first' key from the object or Map
-let anyKey = function(object) {
-	if (object.constructor === Map) {
-		let keys = object.keys();
-		return keys.next().value;
-	} else {
-		return _.first(Object.keys(object));
-	}
-}
-
-// generic getter for either object or Map
-let get = function(key, object) {
-	if (object.constructor === Map) {
-		return object.get(key);
-	} else {
-		return object[key];
-	}
-}
-
-// deep copy the object without the given key and return it
-let copyWithoutKey = function(key, object) {
-	// made this an inner function cuz don't want anyone else accessing it
-	let _deleteKey = function(key, object) {
-		if (object.constructor === Map) {
-			object.delete(key);
-		} else {
-			delete object[key];
-		}
-	}
-
-	let newObject = {};
-	Object.assign(newObject, object);
-	_deleteKey(key, newObject);
-	return newObject;
+	return compareDictionary(trimmedTest, trimmedState);
 }
 
 export { compareState };
