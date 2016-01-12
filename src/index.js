@@ -4,8 +4,6 @@ import _ from 'underscore';
 import util from 'util';
 import { isDictionary, isArray, containsKey, anyKey, get, copyWithoutKey } from './helpers';
 
-// FIXME: how do we distinguish between Objects as dictionaries and objects as leaf nodes, e.g. a leaf node that is a date object.
-
 /* 
 	Recursively compares a reference data structure to a given data structure (the state).
  

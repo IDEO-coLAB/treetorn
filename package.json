@@ -1,13 +1,13 @@
 {
-  "name": "redact",
-  "version": "0.0.0",
-  "description": "A module that tests simple object data structures",
+  "name": "compare-data-structure",
+  "version": "0.0.1",
+  "description": "Recursively compares a reference data structure to a given data structure to help sanity check data handling code.",
   "main": "index.js",
   "scripts": {
     "build": "babel src -d lib",
     "test": "jasmine"
   },
-  "author": "",
+  "author": "Reid Williams",
   "license": "ISC",
   "dependencies": {
     "moment": "^2.11.1",
