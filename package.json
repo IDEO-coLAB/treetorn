@@ -2,7 +2,7 @@
   "name": "compare-data-structure",
   "version": "0.0.1",
   "description": "Recursively compares a reference data structure to a given data structure to help sanity check data handling code.",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "build": "babel src -d lib",
     "test": "jasmine"
