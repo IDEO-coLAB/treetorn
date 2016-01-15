@@ -1,6 +1,6 @@
 {
   "name": "treetorn",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A JavaScript package that helps you enforce data strucutre consistency and write schemas by example.",
   "main": "lib/index.js",
   "scripts": {
