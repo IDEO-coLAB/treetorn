@@ -87,7 +87,7 @@ Lists do not need to have the same number of items to be equivalent. Treetorn do
 compare to be the same:
 ```javascript
 let a = [1, 2, 3];
-let b = [a, b, c];
+let b = [4, 5, 6];
 // compare() must be true when comparing the first item of a with the remaining items in a and
 // must be true when comparing the first item in a with each item in b
 ```
