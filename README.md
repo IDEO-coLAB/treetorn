@@ -74,6 +74,7 @@ object.constructor === Object // if true, object is treated as a dictionary
 This includes object literals like:
 ```javascript
 let object = {whoami: 'an object but really a dictionary'};
+object.constructor === Object // returns true
 ```
 object.constructor === Map    // if true, object is treated as a dictionary
 
