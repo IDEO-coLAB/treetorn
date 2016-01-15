@@ -1,32 +1,36 @@
 'use strict'
 
-var compareState = require('../lib/index.js').compareState;
+var compare = require('../lib/index.js').compare;
 
 describe('comparing test and state', () => {
 	it('should return true when test and state are numbers', () => {
-		expect(compareState(1, 1).passes).toBe(true);
+		expect(compare(1, 1).passes).toBe(true);
 	});
 
 	it('should return true when test is string and state is undefined', () => {
-		expect(compareState(1, undefined).passes).toBe(true);
+		expect(compare(1, undefined).passes).toBe(true);
 	});
 
 	it('should return false when test is a string and state is an array', () => {
-		expect(compareState('string', new Array()).passes).toBe(false);
+		expect(compare('string', new Array()).passes).toBe(false);
+	});
+
+	it('should return false when test is an array and state is a string', () => {
+		expect(compare([], 1).passes).toBe(false);
 	});
 
 	it('should return true when test is a number and state is a Date', () => {
-		expect(compareState(1, new Date()).passes).toBe(true);
+		expect(compare(1, new Date()).passes).toBe(true);
 	});
 
 	it('should return true when test is a Date and state is a number', () => {
-		expect(compareState(new Date(), 1).passes).toBe(true);
+		expect(compare(new Date(), 1).passes).toBe(true);
 	});
 
 	it('should return true when test and state are arrays of numbers', () => {
 		var test = [1, 2, 3, 4];
 		var state = [5, 6, 7, 8, 9, 10];
-		var r = compareState(test, state);
+		var r = compare(test, state);
 		expect(r.passes).toBe(true);
 	});
 
@@ -37,7 +41,7 @@ describe('comparing test and state', () => {
 			{'foo': 1},
 			{'bar': 1}
 		]
-		var r = compareState(test, state);
+		var r = compare(test, state);
 		expect(r.passes).toBe(false);
 	});
 
@@ -52,7 +56,7 @@ describe('comparing test and state', () => {
 			cityNicknames: ['O town', 'The city beautiful']
 		}
 
-		var r = compareState(test, state);
+		var r = compare(test, state);
 		expect(r.passes).toBe(true);
 	});
 
@@ -66,7 +70,7 @@ describe('comparing test and state', () => {
 			cityName: 'Orlando'
 		}
 
-		var r = compareState(test, state);
+		var r = compare(test, state);
 		expect(r.passes).toBe(false);
 	});
 
@@ -80,7 +84,7 @@ describe('comparing test and state', () => {
 			cityNicknames: ['O town', 'The city beautiful']
 		}
 
-		var r = compareState(test, state);
+		var r = compare(test, state);
 		expect(r.passes).toBe(false);
 	});
 
@@ -139,7 +143,7 @@ describe('comparing test and state', () => {
 			]
 		}
 
-		var r = compareState(test, state);
+		var r = compare(test, state);
 		expect(r.passes).toBe(true);
 	});
 
@@ -198,7 +202,7 @@ describe('comparing test and state', () => {
 			]
 		}
 
-		var r = compareState(test, state);
+		var r = compare(test, state);
 		expect(r.passes).toBe(false);
 	})		
 });

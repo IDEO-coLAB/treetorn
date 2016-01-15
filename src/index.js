@@ -7,15 +7,15 @@ import { isDictionary, isArray, containsKey, anyKey, get, copyWithoutKey } from 
 /* 
 	Recursively compares a reference data structure to a given data structure (the state).
  
-	compareState is opinionated and expects test and state to be data structures that comply with 
+	compare is opinionated and expects test and state to be data structures that comply with 
 	some rules:
 	
-	* All pbjects in a list must be of the same type (i.e. compareState(a, b) must return true for all elements in the list)
+	* All pbjects in a list must be of the same type (i.e. compare(a, b) must return true for all elements in the list)
 	* Maps and objects are treated as dictionaries. Two dictionaries are the same if they have exactly the same set of keys 
 		and for each key, the value at the key is the same for test and state.
 	* An object where object.constructor === Object is treated as a dictionary (e.g. let x = {foo:1} is treated as a Dictionary)
 	* An object where object.constructor === Map is treated as a dictionary
-	* All other objects are treated as a leaf node. compareState() of any two leaf nodes always returns true regardless of 
+	* All other objects are treated as a leaf node. compare() of any two leaf nodes always returns true regardless of 
 		object type or primitive type 
 	* Doesn't currently support WeakMaps, Sets, WeakMaps
 
@@ -23,7 +23,7 @@ import { isDictionary, isArray, containsKey, anyKey, get, copyWithoutKey } from 
 		passes: boolean, are test and state equivalent?
 		err: string, where do test and state differ?
 */
-let compareState = function(test, state) {
+let compare = function(test, state) {
 	if (isDictionary(test) === true) {
 		return compareDictionary(test, state);
 	}
@@ -42,7 +42,7 @@ function compareArray(test, state) {
 	if (! isArray(state)) {
 		return { 
 			passes: false, 
-			err: 'test ("' + util.inspect(test, false, null) + '"") is an array but state ("' + util.inspect(state, false, null) + '") is not'
+			err: util.inspect(test, false, null) + ' is an array but ' + util.inspect(state, false, null) + ' is not'
 		}
 	}
 
@@ -80,7 +80,7 @@ function comparePrototypeArray(prototype, state) {
 	} 
 
 	// check prototype agains the first object in state
-	let r = compareState(prototype, _.first(state));
+	let r = compare(prototype, _.first(state));
 	if (r.passes === false) {
 		return r;
 	}
@@ -96,13 +96,13 @@ function compareLeaf(test, state) {
 	} else {
 		return { 
 			passes: false, 
-			err: 'test ("' + util.inspect(test, false, null) + '") is a leaf but state ("' + util.inspect(state, false, null) + '") is not'
+			err: util.inspect(test, false, null) + ' is a leaf but ' + util.inspect(state, false, null) + ' is not'
 		}
 	}
 }
 
 // make sure the two objects have the same keys and recursively call
-// compareState on values. Test and state can be objects or Map objects.
+// compare on values. Test and state can be objects or Map objects.
 function compareDictionary(test, state) {
 	let testKey = anyKey(test);
 
@@ -115,7 +115,7 @@ function compareDictionary(test, state) {
 		} else {
 			return {
 				passes: false, 
-				err: 'state has key ("' + stateKey + '") that\'s missing from test' 
+				err: 'key ("' + stateKey + '") found in only second input' 
 			}
 		}
 	}
@@ -124,12 +124,12 @@ function compareDictionary(test, state) {
 	if (containsKey(testKey, state) === undefined) {
 		return {
 			passes: false,
-			err: 'test has key ("' + testKey + '") that\'s missing from state'
+			err: 'key ("' + testKey + '") found in only first input'
 		}
 	}
 
 	// test and state both have the key. Make sure values are the same
-	let sameValue = compareState(get(testKey, test), get(testKey, state));
+	let sameValue = compare(get(testKey, test), get(testKey, state));
 	if (sameValue.passes === false) {
 		return sameValue;
 	}
@@ -141,4 +141,4 @@ function compareDictionary(test, state) {
 	return compareDictionary(trimmedTest, trimmedState);
 }
 
-export { compareState };
+export { compare };
