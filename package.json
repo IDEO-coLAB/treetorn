@@ -1,16 +1,16 @@
 {
-  "name": "compare-data-structure",
+  "name": "treetorn",
   "version": "0.0.1",
-  "description": "Recursively compares a reference data structure to a given data structure to help sanity check data handling code.",
+  "description": "A JavaScript package that helps you enforce data strucutre consistency and write schemas by example.",
   "main": "lib/index.js",
   "scripts": {
     "build": "babel src -d lib",
-    "test": "jasmine"
+    "test": "jasmine",
+    "install": "babel src -d lib"
   },
   "author": "Reid Williams",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "moment": "^2.11.1",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
